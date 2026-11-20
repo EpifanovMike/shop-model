@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Справка — Финансовая модель розничной сети (РФ)</title>
+  <link rel="preconnect" href="https://googleapis.com" />
+  <link rel="preconnect" href="https://gstatic.com" crossorigin />
+  <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page: #f4f6f9;
+      --bg-card: #ffffff;
+      --bg-subtle: #f8fafc;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sec: #475569;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-bg: #eff6ff;
+      --green-bg: #e6f4ea;
+      --green-border: #bbf7d0;
+      --green-text: #15803d;
+      --green-btn: #16a34a;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --danger-text: #dc2626;
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      font-size: 14px;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    .help-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 18px 48px;
+    }
+
+    .help-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .help-header-title h1 {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .help-header-title p {
+      font-size: 13px;
+      color: var(--text-sec);
+      margin-top: 2px;
+    }
+
+    .help-header-actions {
+      margin-left: auto;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 7px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: 1px solid var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-outline-sm {
+      background: #ffffff;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+    .btn-outline-sm:hover {
+      background: var(--primary-bg);
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+
+    .section-card h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lead-text {
+      color: var(--text-sec);
+      margin-bottom: 14px;
+    }
+/* КОНЕЦ ЧАСТИ 1 ИЗ 6 (help.html) */
+    .section-right-footer {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+
+    .page-right-footer {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .toc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .toc-item {
+      display: block;
+      padding: 10px 14px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      transition: 0.15s;
+    }
+
+    .toc-item:hover {
+      background: var(--primary-bg);
+      border-color: var(--primary);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .sub-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+
+    .sub-box h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .sub-box p {
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    .clean-list {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--text-sec);
+      font-size: 13.5px;
+    }
+
+    .clean-list strong {
+      color: var(--text-main);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+
+    .callout-info {
+      background: var(--primary-bg);
+      border-left: 4px solid var(--primary);
+      padding: 11px 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+    }
+
+    .step-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+    }
+
+    .result-summary {
+      margin-top: 16px;
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+
+    .result-summary h3 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--green-text);
+      margin-bottom: 12px;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 13.5px;
+    }
+    .result-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .num-circle {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--green-btn);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .metric-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .metric-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .metric-formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--primary);
+      padding: 6px 9px;
+      border-radius: 6px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .metric-meaning {
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    .mistake-card {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+    }
+    .mistake-card:last-child {
+      margin-bottom: 0;
+    }
+    .mistake-card h4 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--danger-text);
+      margin-bottom: 4px;
+    }
+    .mistake-card p {
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .faq-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 15px;
+      margin-bottom: 10px;
+    }
+    .faq-box:last-child {
+      margin-bottom: 0;
+    }
+    .faq-box summary {
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+    }
+    .faq-box p {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    @media (max-width: 760px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .section-card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<!-- КОНЕЦ ЧАСТИ 2 ИЗ 6 (help.html) -->
+<body>
+  <div class="help-wrapper">
+    <!-- Шапка -->
+    <header class="help-header" id="top">
+      <div class="help-header-title">
+        <h1>📊 Справка: Финансовая модель розничной сети (РФ)</h1>
+        <p>Инструкция по заполнению, пример расчета и справочник формул</p>
+      </div>
+      <div class="help-header-actions">
+        <a href="index.html" class="btn btn-primary">← Вернуться в калькулятор</a>
+      </div>
+    </header>
+
+    <!-- Содержание -->
+    <section class="section-card" id="toc">
+      <h2>📑 Содержание справочника</h2>
+      <p class="lead-text">Нажмите на нужный раздел, чтобы перейти к инструкции, примеру заполнения или описанию формул:</p>
+      <div class="toc-grid">
+        <a href="#sec-who" class="toc-item">🎯 1. Кому нужен калькулятор</a>
+        <a href="#sec-why" class="toc-item">💡 2. Для чего он нужен</a>
+        <a href="#sec-how" class="toc-item">🛠 3. Пошаговая инструкция</a>
+        <a href="#sec-example" class="toc-item">📝 4. Пример заполнения и разбор итогов</a>
+        <a href="#sec-metrics" class="toc-item">📖 5. Справочник метрик и формул</a>
+        <a href="#sec-mistakes" class="toc-item">⚠️ 6. Типичные ошибки</a>
+        <a href="#sec-faq" class="toc-item">❓ 7. Частые вопросы (FAQ)</a>
+      </div>
+    </section>
+
+    <!-- Раздел 1 -->
+    <section class="section-card" id="sec-who">
+      <h2>🎯 1. Кому нужен калькулятор</h2>
+      <div class="grid-2">
+        <div class="sub-box">
+          <h3>Собственникам розницы и основателям брендов</h3>
+          <p>Для оценки полных вложений в открытие нового магазина (ремонт, оборудование, закупка товара) и расчета реального срока возврата инвестиций.</p>
+        </div>
+        <div class="sub-box">
+          <h3>Операционным и коммерческим директорам</h3>
+          <p>Для контроля чистой рентабельности каждой точки, настройки мотивации продавцов от продаж и расчета нагрузки головного офиса на сеть.</p>
+        </div>
+        <div class="sub-box">
+          <h3>Финансовым менеджерам и бухгалтерам</h3>
+          <p>Для точного моделирования налоговой нагрузки РФ: УСН (6% и 15%), УСН с НДС (5% и 7%), ОСНО (25% прибыль + 20% НДС), НДФЛ и страховых взносов СФР.</p>
+        </div>
+        <div class="sub-box">
+          <h3>Инвесторам и партнерам по франшизе</h3>
+          <p>Для проверки устойчивости бизнес-плана до подписания договора аренды в торговом центре или стрит-ритейле.</p>
+        </div>
+      </div>
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+
+    <!-- Раздел 2 -->
+    <section class="section-card" id="sec-why">
+      <h2>💡 2. Для чего он нужен</h2>
+      <ul class="clean-list">
+        <li><strong>Посчитать полные стартовые инвестиции (CAPEX + Товарный запас).</strong> Модель объединяет затраты на ремонт, мебель, ИТ-технику (за вычетом компенсаций от ТЦ) и закупку первичного товарного остатка в валюте закупа (USD, EUR или CNY) по официальному курсу ЦБ РФ.</li>
+        <li><strong>Увидеть реальный срок окупаемости с учетом периода разгона (Ramp-up).</strong> Показывает, когда магазин реально выйдет в плюс, если первые 2–6 месяцев выручка составляет 40–85% от плана.</li>
+        <li><strong>Определить точку безубыточности всей сети (Розница + Опт − Офис).</strong> Показывает, сколько работающих магазинов нужно, чтобы полностью окупить расходы управляющего офиса с учетом прибыли от оптовых отгрузок.</li>
+        <li><strong>Сравнить два сценария («План А» и «План Б»).</strong> Позволяет на одном экране проверить, как изменится прибыль при росте аренды, увеличении сезонных скидок или переходе на УСН с НДС.</li>
+      </ul>
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+    <!-- КОНЕЦ ЧАСТИ 3 ИЗ 6 (help.html) -->
+    <!-- Раздел 3 -->
+    <section class="section-card" id="sec-how">
+      <h2>🛠 3. Пошаговая инструкция</h2>
+      <div class="callout-info">
+        <strong>Главное правило:</strong> Вводите свои цифры <strong>только в поля с белым фоном и рамкой</strong>. Все остальные строки (на сером и зеленом фоне) рассчитываются автоматически по формулам.
+      </div>
+
+      <div class="grid-2">
+        <div class="sub-box">
+          <span class="step-badge">Шаг 1</span>
+          <h3>Выберите валюту закупа, режим РФ и курс ЦБ</h3>
+          <ul class="clean-list">
+            <li>В верхней панели выберите <strong>Валюту закупки товара</strong> (<code>USD</code>, <code>EUR</code> или <code>CNY</code>) и <strong>Налоговый режим (РФ)</strong> — ставки НДС и налога бизнеса подставятся автоматически.</li>
+            <li>Нажмите <code>↻ ЦБ РФ</code> для загрузки официального курса Центробанка или впишите свой плановый курс с учетом банковской комиссии.</li>
+          </ul>
+        </div>
+
+        <div class="sub-box">
+          <span class="step-badge">Шаг 2</span>
+          <h3>Заполните параметры зала и CAPEX</h3>
+          <ul class="clean-list">
+            <li>В <strong>Блоке 1</strong> укажите общую и торговую площадь, плотность выкладки (шт./м²), закупочную цену товара в валюте, стартовую наценку, среднюю скидку и плановую выручку в рублях.</li>
+            <li>В <strong>Блоке 2</strong> впишите затраты на ремонт, торговое оборудование, ИТ-технику и компенсацию от ТЦ (если она предоставляется).</li>
+          </ul>
+        </div>
+
+        <div class="sub-box">
+          <span class="step-badge">Шаг 3</span>
+          <h3>Настройте зарплату, налоги, опт и офис</h3>
+          <ul class="clean-list">
+            <li>В <strong>Блоке 3</strong> выберите тип зарплаты (<code>На руки</code> или <code>Gross</code>), задайте штат, оклад, бонус продавцов от продаж, ставки НДФЛ (13%) и взносов СФР (30,2%).</li>
+            <li>В <strong>Блоке 4</strong> введите плановую оптовую выручку, наценку опта и ежемесячные расходы управляющего офиса.</li>
+          </ul>
+        </div>
+
+        <div class="sub-box">
+          <span class="step-badge">Шаг 4</span>
+          <h3>Оцените разгон и сравните сценарии</h3>
+          <ul class="clean-list">
+            <li>В <strong>Блоке 5</strong> выберите длительность периода разгона (0, 2, 3 или 6 месяцев), чтобы увидеть реальную окупаемость.</li>
+            <li>Нажмите <code>Копировать А → Б</code>, измените параметры во вкладке <strong>«План Б»</strong> и сравните сценарии на графике и в таблице внизу.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+
+    <!-- Раздел 4 -->
+    <section class="section-card" id="sec-example">
+      <h2>📝 4. Пример заполнения и разбор итогов</h2>
+      <p class="lead-text">Разберем заполнение модели на реальном примере розничного магазина одежды площадью <strong>160 м²</strong> в России (режим УСН Доходы 6%, без НДС, закупка в USD по курсу <code>92 ₽</code>):</p>
+
+      <div class="grid-2">
+        <div class="sub-box">
+          <h3>Что вписываем в Блок 1 (Помещение и товар)</h3>
+          <ul class="clean-list">
+            <li><strong>Общая / торговая площадь:</strong> <code>160 м²</code> / <code>130 м²</code> (30 м² отведено под подсобку и примерочные).</li>
+            <li><strong>Выкладка и склад:</strong> <code>13 шт./м²</code> и <code>20%</code> запас на складе. Калькулятор сам посчитает объем закупки: <code>1 690 шт.</code> в зал + <code>338 шт.</code> на склад = <strong>2 028 единиц</strong>.</li>
+            <li><strong>Цена и наценка:</strong> закупка <code>31 USD</code>, стартовая наценка <code>110%</code>, средняя сезонная скидка <code>10%</code>. Эффективная наценка составит <strong>89,0%</strong>.</li>
+            <li><strong>Плановая выручка:</strong> <code>3 690 000 ₽/мес.</code></li>
+          </ul>
+        </div>
+
+        <div class="sub-box">
+          <h3>Что вписываем в Блоки 2, 3 и 4 (Затраты и сеть)</h3>
+          <ul class="clean-list">
+            <li><strong>CAPEX (Блок 2):</strong> СМР <code>40 000 ₽</code>, свет <code>400 000 ₽</code>, вывеска <code>100 000 ₽</code>, торговое оборудование <code>1 000 000 ₽</code>, манекены, антикражка, вешалки, ВИК и ИТ-блок (<code>140 000 ₽</code>). Итого ремонт и техника: <strong>2 170 000 ₽</strong>.</li>
+            <li><strong>Расходы магазина (Блок 3):</strong> <code>4 продавца</code> с окладом <code>75 000 ₽</code> на руки + бонус <code>2%</code> от продаж, НДФЛ <code>13%</code>, взносы СФР <code>30,2%</code>, аренда <code>450 000 ₽</code>, эквайринг <code>1,5%</code>.</li>
+            <li><strong>Опт и офис (Блок 4):</strong> оптовая выручка <code>1 500 000 ₽</code> с наценкой <code>25%</code>, расходы управляющего офиса — <code>1 200 000 ₽/мес.</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="result-summary">
+        <h3>🔍 На какие 5 цифр смотреть в итоге и как их понимать:</h3>
+        <div class="result-row">
+          <span class="num-circle">1</span>
+          <div>
+            <strong>Общие инвестиции (CAPEX + ТЗ) ≈ 7,95 млн ₽:</strong> это полная сумма, которая должна быть на счете до открытия (<code>2,17 млн ₽</code> на ремонт и оборудование + <code>5,78 млн ₽</code> на закупку 2 028 единиц товара).
+          </div>
+        </div>
+        <div class="result-row">
+          <span class="num-circle">2</span>
+          <div>
+            <strong>Чистая прибыль магазина и NPM:</strong> для товарного ритейла здоровой считается чистая рентабельность от <strong>10% до 18%</strong>. Если показатель ниже 7%, магазин слишком чувствителен к падению трафика.
+          </div>
+        </div>
+        <div class="result-row">
+          <span class="num-circle">3</span>
+          <div>
+            <strong>Точка безубыточности (BEP) и Запас прочности:</strong> показывает минимальную выручку с чеков, ниже которой точка уходит в минус. Запас прочности выше <strong>25–30%</strong> означает устойчивую модель.
+          </div>
+        </div>
+        <div class="result-row">
+          <span class="num-circle">4</span>
+          <div>
+            <strong>Реальная окупаемость (с разгоном 3 мес.):</strong> ориентируйтесь именно на нее — она учитывает, что первые месяцы магазин работает вполсилы и возвращает вложения на 2–4 месяца дольше идеального расчета.
+          </div>
+        </div>
+        <div class="result-row">
+          <span class="num-circle">5</span>
+          <div>
+            <strong>Магазинов для окупаемости офиса:</strong> если цифра равна <code>3 маг.</code>, значит первые 3 магазина будут работать только на покрытие затрат головного офиса, а чистая прибыль сети начнет накапливаться с открытия <strong>4-й точки</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+    <!-- КОНЕЦ ЧАСТИ 4 ИЗ 6 (help.html) -->
+    <!-- Раздел 5 -->
+    <section class="section-card" id="sec-metrics">
+      <h2>📖 5. Справочник метрик и формул</h2>
+      <p class="lead-text">Все ключевые показатели российской модели сгруппированы в карточки с формулой расчета и экономическим смыслом:</p>
+
+      <div class="grid-2">
+        <div class="metric-card">
+          <div class="metric-name">Товарный запас (ТЗ)</div>
+          <div class="metric-formula">(Площадь зала × Плотность × (1 + % склада)) × Цена ед. (валюта) × Курс ЦБ</div>
+          <div class="metric-meaning">Объем замороженных средств в рублях на первичную закупку товара в USD, EUR или CNY для зала и склада.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Эффективная наценка</div>
+          <div class="metric-formula">(1 + Стартовая наценка) × (1 − Средняя скидка) − 1</div>
+          <div class="metric-meaning">Реальная средняя наценка за сезон с учетом распродаж, акций и бонусных списаний.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Выручка без НДС (Net Revenue)</div>
+          <div class="metric-formula">Выручка с чеков / (1 + Ставка НДС)</div>
+          <div class="metric-meaning">Чистая выручка магазина, от которой считаются валовая прибыль, УСН и налог на прибыль.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">НДС к уплате</div>
+          <div class="metric-formula">Исходящий НДС − Входящий НДС (ОСНО) или % с выручки (УСН НДС 5%/7%)</div>
+          <div class="metric-meaning">При ОСНО (20%) принимается к вычету входной НДС с закупки, при льготном УСН НДС (5%/7%) налог берется с оборота.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Себестоимость (COGS)</div>
+          <div class="metric-formula">Выручка без НДС / (1 + Эффективная наценка)</div>
+          <div class="metric-meaning">Закупочная стоимость товаров, проданных магазином за отчетный месяц.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Валовая маржа (GMR)</div>
+          <div class="metric-formula">(Выручка без НДС − Себестоимость) / Выручка без НДС</div>
+          <div class="metric-meaning">Доля валовой прибыли в выручке. Показывает запас прочности для покрытия аренды и ФОТ.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Начисленный ФОТ (Gross) и НДФЛ</div>
+          <div class="metric-formula">Если «На руки»: ФОТ Gross = (Оклады + Бонус) / (1 − % НДФЛ)</div>
+          <div class="metric-meaning">Калькулятор автоматически начисляет НДФЛ (13%) сверху при вводе зарплаты «на руки» или удерживает из Gross.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Страховые взносы СФР</div>
+          <div class="metric-formula">ФОТ Gross × Ставка СФР (ПФР + ФСС + ОМС + травматизм)</div>
+          <div class="metric-meaning">Обязательные отчисления работодателя с начисленной зарплаты и премии продавцов (базовый тариф РФ — 30,2%).</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">EBITDA и OPM</div>
+          <div class="metric-formula">EBITDA = Валовая прибыль − OPEX; OPM = EBITDA / Выручка без НДС</div>
+          <div class="metric-meaning">Операционная прибыль магазина до вычета амортизации оборудования и налога бизнеса.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Чистая прибыль и NPM</div>
+          <div class="metric-formula">Чистая прибыль = EBITDA − Амортизация − Налог бизнеса (УСН / ОСНО)</div>
+          <div class="metric-meaning">Итоговый финансовый результат работы одного магазина за месяц после всех налогов и взносов.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Точка безубыточности (BEP)</div>
+          <div class="metric-formula">(Постоянный OPEX + Амортизация) / Маржинальный коэффициент</div>
+          <div class="metric-meaning">Минимальная месячная выручка с чеков, при которой магазин покрывает все расходы и выходит в ноль.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-name">Окупаемость и Безубыточность сети</div>
+          <div class="metric-formula">Окупаемость: Накопленный CF ≥ Инвестиции; Сеть: Округление ((Офис − Опт) / Прибыль маг.)</div>
+          <div class="metric-meaning">Реальный срок возврата вложений с учетом разгона и число магазинов для покрытия расходов головного офиса.</div>
+        </div>
+      </div>
+
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+    <!-- КОНЕЦ ЧАСТИ 5 ИЗ 6 (help.html) -->
+    <!-- Раздел 6 -->
+    <section class="section-card" id="sec-mistakes">
+      <h2>⚠️ 6. Типичные ошибки при расчете магазина</h2>
+
+      <div class="mistake-card">
+        <h4>1. Расчет закупки строго по курсу ЦБ РФ без учета банковской комиссии</h4>
+        <p>Официальный курс ЦБ РФ (<code>USD</code>, <code>EUR</code>, <code>CNY</code>) удобен как базовый ориентир, но при покупке валюты или оплате инвойсов банк и платежные агенты берут комиссию 1,5–4%. Рекомендуется вручную закладывать в курс небольшой запас.</p>
+      </div>
+
+      <div class="mistake-card">
+        <h4>2. Расчет прибыли по стартовой наценке без учета распродаж</h4>
+        <p>В товарном ритейле стартовая наценка 110% никогда не сохраняется на весь объем коллекции. Скидка 10–15% к концу сезона снижает эффективную наценку со 110% до 78–89% — обязательно закладывайте средний процент уценки.</p>
+      </div>
+
+      <div class="mistake-card">
+        <h4>3. Ожидание 100% плановой выручки с первого дня</h4>
+        <p>Новому магазину нужно 2–6 месяцев на наработку трафика. Без учета периода разгона (Ramp-up) реальный срок окупаемости оказывается на 3–5 месяцев дольше идеального.</p>
+      </div>
+
+      <div class="mistake-card">
+        <h4>4. Путаница между зарплатой «на руки» и ФОТ по договору (Gross)</h4>
+        <p>Если пообещать продавцу 75 000 ₽ «на руки», реальные расходы магазина с учетом начисленного сверху НДФЛ (13%) и страховых взносов СФР (30,2%) составят 112 241 ₽. Всегда проверяйте выбранный переключатель типа зарплаты в Блоке 3.</p>
+      </div>
+
+      <div class="mistake-card">
+        <h4>5. Игнорирование расходов управляющего офиса</h4>
+        <p>Один магазин может показывать отличную прибыль, но сеть из 2–3 точек будет работать в минус из-за расходов на склад, бухгалтерию и офис. Всегда проверяйте точку безубыточности всей сети в Блоке 4.</p>
+      </div>
+
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+
+    <!-- Раздел 7 -->
+    <section class="section-card" id="sec-faq">
+      <h2>❓ 7. Частые вопросы (FAQ)</h2>
+
+      <details class="faq-box" open>
+        <summary>Сохраняются ли введенные мной данные при обновлении страницы?</summary>
+        <p>Да. Все изменения в «Плане А» и «Плане Б», выбранная валюта закупки, налоговый режим и курсы валют автоматически сохраняются в локальном хранилище вашего браузера (<code>localStorage</code>). Чтобы вернуться к исходному примеру, нажмите кнопку <strong>«Демо-данные»</strong>.</p>
+      </details>
+
+      <details class="faq-box">
+        <summary>Откуда загружаются курсы валют и как сменить валюту закупки?</summary>
+        <p>При открытии страницы или нажатии кнопки <strong>«↻ ЦБ РФ»</strong> калькулятор загружает актуальные официальные курсы <code>USD</code>, <code>EUR</code> и <code>CNY</code> к рублю из открытого JSON-фида ЦБ РФ. При смене валюты закупки в шапке закупочная цена товара автоматически пересчитывается по текущему соотношению курсов.</p>
+      </details>
+
+      <details class="faq-box">
+        <summary>Как учитывается НДС при разных налоговых режимах РФ?</summary>
+        <p>Плановая выручка вводится с чеков (включая НДС). Для <strong>ОСНО (НДС 20%)</strong> калькулятор выделяет исходящий НДС из выручки и уменьшает его на входящий НДС с закупки товара. Для <strong>УСН с НДС (5% или 7%)</strong> налог рассчитывается со всей выручки без права на вычет входного НДС.</p>
+      </details>
+
+      <details class="faq-box">
+        <summary>Как выгрузить расчеты в Excel или сохранить в PDF?</summary>
+        <p>Кнопка <strong>«Excel (.csv)»</strong> выгружает полную сводку активного сценария в таблицу для Microsoft Excel или Google Таблиц. Кнопка <strong>«Печать / PDF»</strong> формирует чистую печатную версию — в окне печати выберите «Сохранить как PDF».</p>
+      </details>
+
+      <div class="section-right-footer">
+        <a href="#top" class="btn btn-outline-sm">↑ Вернуться в начало справки</a>
+      </div>
+    </section>
+
+    <div class="page-right-footer">
+      <a href="index.html" class="btn btn-primary">← Вернуться в калькулятор</a>
+    </div>
+  </div>
+</body>
+</html>
