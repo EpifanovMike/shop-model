@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Финансовая модель розничной сети РФ: юнит-экономика магазина, опт, управляющий офис, налоги УСН/ОСНО, окупаемость с разгоном и Cash Flow." />
+  <title>Финансовая модель розничной сети (РФ): Розница, Опт и Офис</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Применяем сохранённую тему до отрисовки, чтобы не было «мигания» -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('retail_finmodel_theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Шапка -->
+    <header class="top-header">
+      <div class="header-left">
+        <h1>Финансовая модель розничной сети</h1>
+        <span class="subtitle">Юнит-экономика магазина (РФ) · Опт · Управляющий офис</span>
+      </div>
+      <div class="header-right">
+        <button type="button" id="themeToggleBtn" class="theme-toggle" title="Переключить тему" aria-label="Переключить светлую/тёмную тему">
+          <span class="icon-sun" aria-hidden="true">☀️</span>
+          <span class="icon-moon" aria-hidden="true">🌙</span>
+        </button>
+        <div class="scenario-tabs" role="tablist" aria-label="Сценарии расчёта">
+          <button type="button" class="tab-btn active" data-scenario="A" role="tab" aria-selected="true">План А (Базовый)</button>
+          <button type="button" class="tab-btn" data-scenario="B" role="tab" aria-selected="false">План Б (Альтернативный)</button>
+        </div>
+        <button type="button" id="copyScenarioBtn" class="btn btn-outline" title="Скопировать параметры Плана А в План Б">Копировать А → Б</button>
+      </div>
+    </header>
+
+    <!-- Панель управления -->
+    <section class="toolbar">
+      <div class="toolbar-group selectors-group">
+        <label class="toolbar-item">
+          <span>Валюта закупки товара:</span>
+          <select id="buyCurrencySelect">
+            <option value="USD" selected>Доллар США (USD $)</option>
+            <option value="EUR">Евро (EUR €)</option>
+            <option value="CNY">Китайский юань (CNY ¥)</option>
+          </select>
+        </label>
+
+        <label class="toolbar-item">
+          <span>Налоговый режим (РФ):</span>
+          <select id="taxRegimeSelect">
+            <option value="usn6" selected>ИП / ООО УСН Доходы (6%)</option>
+            <option value="usn6_vat5">УСН Доходы (6% + НДС 5%)</option>
+            <option value="usn6_vat7">УСН Доходы (6% + НДС 7%)</option>
+            <option value="usn15">УСН Доходы − Расходы (15%)</option>
+            <option value="osno25">ООО ОСНО (Прибыль 25% + НДС 20%)</option>
+            <option value="custom">Настраиваемый режим</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Официальные курсы ЦБ РФ -->
+      <div class="toolbar-group rates-group">
+        <div class="rate-field">
+          <label for="rateUSD">USD/RUB</label>
+          <input type="number" id="rateUSD" step="0.01" min="0.01" value="92.00" inputmode="decimal" autocomplete="off" />
+        </div>
+        <div class="rate-field">
+          <label for="rateEUR">EUR/RUB</label>
+          <input type="number" id="rateEUR" step="0.01" min="0.01" value="100.00" inputmode="decimal" autocomplete="off" />
+        </div>
+        <div class="rate-field">
+          <label for="rateCNY">CNY/RUB</label>
+          <input type="number" id="rateCNY" step="0.01" min="0.01" value="12.70" inputmode="decimal" autocomplete="off" />
+        </div>
+        <button type="button" id="fetchRatesBtn" class="btn btn-secondary" title="Загрузить официальный курс ЦБ РФ" aria-label="Загрузить официальный курс ЦБ РФ">
+          ↻ ЦБ РФ
+        </button>
+        <span id="ratesStatus" class="rates-status" title="Источник: официальный JSON-фид ЦБ РФ">Базовые</span>
+      </div>
+
+      <!-- Кнопки действий -->
+      <div class="toolbar-group actions-group">
+        <button type="button" id="loadDemoBtn" class="btn btn-secondary">Демо-данные</button>
+        <button type="button" id="resetBtn" class="btn btn-secondary">Очистить</button>
+        <button type="button" id="exportExcelBtn" class="btn btn-success" title="Скачать отчёт в Excel (.xlsx)">Excel (.xlsx)</button>
+        <button type="button" id="printBtn" class="btn btn-primary">Печать / PDF</button>
+        <a href="help.html" class="btn btn-outline" aria-label="Открыть справку по калькулятору">? Справка</a>
+      </div>
+    </section>
+
+    <!-- Верхний ряд KPI -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">Чистая прибыль магазина / мес.</div>
+        <div class="kpi-value" id="kpiNetProfit">0 ₽</div>
+        <div class="kpi-sub" id="kpiNetProfitBuyCurr">0 USD / мес.</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Рентабельность (NPM)</div>
+        <div class="kpi-value" id="kpiNpm">0,00 %</div>
+        <div class="kpi-sub">Валовая маржа (GMR): <strong id="kpiGmr">0,0 %</strong></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Общие инвестиции (CAPEX + ТЗ)</div>
+        <div class="kpi-value" id="kpiTotalInvest">0 ₽</div>
+        <div class="kpi-sub">Окупаемость (с разгоном): <strong id="kpiPaybackReal">0 мес.</strong></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Безубыточность сети (офис)</div>
+        <div class="kpi-value" id="kpiStoresNeeded">0 маг.</div>
+        <div class="kpi-sub">Прибыль сети (<span id="kpiStoresLabel">5</span> маг.): <strong id="kpiNetworkProfit">0 ₽</strong></div>
+      </div>
+    </section>
+
+    <!-- Инфографика распределения выручки -->
+    <section class="card breakdown-card">
+      <div class="breakdown-header">
+        <h2>Структура распределения выручки магазина</h2>
+        <div class="breakdown-legend">
+          <span class="legend-item"><i class="dot dot-cogs" aria-hidden="true"></i>Себестоимость: <strong id="legCogs">0%</strong></span>
+          <span class="legend-item"><i class="dot dot-opex" aria-hidden="true"></i>OPEX + Аморт.: <strong id="legOpex">0%</strong></span>
+          <span class="legend-item"><i class="dot dot-tax" aria-hidden="true"></i>Налоги + НДС: <strong id="legTax">0%</strong></span>
+          <span class="legend-item"><i class="dot dot-profit" aria-hidden="true"></i>Чистая прибыль: <strong id="legProfit">0%</strong></span>
+        </div>
+      </div>
+      <div class="stacked-bar" id="revenueStackedBar" aria-hidden="true">
+        <div class="bar-seg seg-cogs" id="barCogs" style="width: 45%">45%</div>
+        <div class="bar-seg seg-opex" id="barOpex" style="width: 25%">25%</div>
+        <div class="bar-seg seg-tax" id="barTax" style="width: 5%">5%</div>
+        <div class="bar-seg seg-profit" id="barProfit" style="width: 25%">25%</div>
+      </div>
+    </section>
+
+    <!-- Основная 3-колоночная сетка -->
+    <main class="main-grid">
+      <!-- КОЛОНКА 1 -->
+      <div class="grid-col">
+        <!-- Блок 1 -->
+        <section class="card">
+          <h3 class="card-title">1. Параметры помещения и ценообразования</h3>
+          <div class="form-rows">
+            <div class="row">
+              <label>Общая площадь, м² <span class="tip" data-tip="Общая арендуемая площадь помещения">?</span></label>
+              <input type="number" data-field="areaTotal" min="1" step="1" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Торговая площадь, м² <span class="tip" data-tip="Площадь торгового зала без подсобки">?</span></label>
+              <input type="number" data-field="areaSales" min="1" step="1" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Плотность выкладки, шт./м² <span class="tip" data-tip="Количество единиц товара на 1 м² торгового зала">?</span></label>
+              <input type="number" data-field="unitsPerSqm" min="1" step="1" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Запас склада от зала, % <span class="tip" data-tip="Доля товарного запаса на складе от объема зала (обычно 20%)">?</span></label>
+              <input type="number" data-field="stockWarehousePct" min="0" step="1" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Средняя закупочная цена (<span class="buy-curr-code">USD</span>) <span class="tip" data-tip="Средняя себестоимость 1 единицы товара в выбранной валюте закупки">?</span></label>
+              <input type="number" data-field="unitCostBuy" min="0.1" step="0.5" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Стартовая наценка, % <span class="tip" data-tip="Базовая торговая наценка к себестоимости (например, 110%)">?</span></label>
+              <input type="number" data-field="markupPct" min="0" step="1" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Средняя скидка / уценка, % <span class="tip" data-tip="Средний процент распродаж и бонусов по сезону">?</span></label>
+              <input type="number" data-field="discountPct" min="0" max="99" step="0.5" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Плановая выручка / мес. (₽) <span class="tip" data-tip="Среднемесячная выручка магазина с чеков (включая НДС)">?</span></label>
+              <input type="number" data-field="monthlyRevenue" min="0" step="10000" autocomplete="off" />
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row calc-row">
+              <span>ТЗ торгового зала / склада, шт.</span>
+              <strong id="outStockUnits">0 / 0 (0 шт.)</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Эффективная наценка (с учетом скидок)</span>
+              <strong id="outEffectiveMarkup">0,0 %</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Средняя розничная цена ед. (₽)</span>
+              <strong id="outAvgRetailPrice">0 ₽</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Блок 2 -->
+        <section class="card">
+          <h3 class="card-title">2. Инвестиции (CAPEX) и Товарный запас</h3>
+          <div class="form-rows">
+            <div class="row">
+              <label>СМР + пожарная безопасность (₽)</label>
+              <input type="number" data-field="capexSmr" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Освещение (₽)</label>
+              <input type="number" data-field="capexLight" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Вывеска (₽)</label>
+              <input type="number" data-field="capexSign" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Торговое оборудование (₽)</label>
+              <input type="number" data-field="capexFurniture" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Компенсация от ТЦ / бренда (₽) <span class="tip" data-tip="Вычитается из общих затрат на открытие">?</span></label>
+              <input type="number" data-field="capexCompensation" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Манекены (₽)</label>
+              <input type="number" data-field="capexMannequins" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Антикражное оборудование + биперы (₽)</label>
+              <input type="number" data-field="capexAntitheft" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Вешалки + расходники (₽)</label>
+              <input type="number" data-field="capexHangers" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Прочие (ВИК, электропроект) (₽)</label>
+              <input type="number" data-field="capexOther" min="0" step="1000" autocomplete="off" />
+            </div>
+
+            <details class="it-details">
+              <summary>Детализация ИТ-оборудования: <strong id="outItSubtotal">0 ₽</strong></summary>
+              <div class="it-subgrid">
+                <div class="row">
+                  <label>Компьютер / моноблок (₽)</label>
+                  <input type="number" data-field="itPc" min="0" step="500" autocomplete="off" />
+                </div>
+                <div class="row">
+                  <label>Фискальный регистратор (ФР) (₽)</label>
+                  <input type="number" data-field="itFr" min="0" step="500" autocomplete="off" />
+                </div>
+                <div class="row">
+                  <label>Сканер штрихкодов (₽)</label>
+                  <input type="number" data-field="itScanner" min="0" step="500" autocomplete="off" />
+                </div>
+                <div class="row">
+                  <label>Принтер этикеток (₽)</label>
+                  <input type="number" data-field="itPrinter" min="0" step="500" autocomplete="off" />
+                </div>
+                <div class="row">
+                  <label>МФУ (₽)</label>
+                  <input type="number" data-field="itMfu" min="0" step="500" autocomplete="off" />
+                </div>
+                <div class="row">
+                  <label>ПО и лицензии (₽)</label>
+                  <input type="number" data-field="itSoft" min="0" step="500" autocomplete="off" />
+                </div>
+                <div class="row">
+                  <label>ИТ-расходники и кабели (₽)</label>
+                  <input type="number" data-field="itConsumables" min="0" step="500" autocomplete="off" />
+                </div>
+              </div>
+            </details>
+
+            <div class="row calc-row">
+              <span>ИТОГО CAPEX (без товара)</span>
+              <strong id="outCapexTotal">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Вложения на 1 м² общей площади</span>
+              <strong id="outCapexPerSqm">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Товарный запас (<span id="outStockBuyCurr">0 USD</span>)</span>
+              <strong id="outStockTotal">0 ₽</strong>
+            </div>
+            <div class="row highlight-green">
+              <span>ИТОГО ОБЩИЕ ИНВЕСТИЦИИ</span>
+              <strong id="outTotalInvestment">0 ₽</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- КОЛОНКА 2 -->
+      <div class="grid-col">
+        <!-- Блок 3 -->
+        <section class="card">
+          <h3 class="card-title">3. Отчет о прибылях и убытках магазина (P&amp;L)</h3>
+          <div class="form-rows">
+            <div class="row calc-row">
+              <span>Выручка с чеков (Gross Revenue)</span>
+              <strong id="pnlRevenue">0 ₽</strong>
+            </div>
+            <div class="row">
+              <label>Ставка НДС, % <span class="tip" data-tip="Подставляется по режиму РФ (0%, 5%, 7% или 20%), можно изменить">?</span></label>
+              <input type="number" data-field="vatPct" min="0" max="50" step="1" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>НДС к уплате (<span id="pnlVatModeLabel">без НДС</span>)</span>
+              <strong id="pnlVatPayable">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Выручка без НДС (Net Revenue)</span>
+              <strong id="pnlNetRevenue">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Себестоимость / COGS</span>
+              <strong id="pnlCogs">0 ₽</strong>
+            </div>
+            <div class="row highlight-green">
+              <span>Валовая прибыль / Gross Margin</span>
+              <strong id="pnlGrossProfit">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Валовая рентабельность (GMR)</span>
+              <strong id="pnlGmr">0,00 %</strong>
+            </div>
+
+            <div class="divider"></div>
+            <div class="section-label">Операционные расходы (OPEX) и ФОТ</div>
+
+            <div class="row">
+              <label>Тип расчета зарплаты <span class="tip" data-tip="«На руки» — калькулятор начислит НДФЛ сверху; «Gross» — оклад уже включает НДФЛ">?</span></label>
+              <select data-field="salaryType">
+                <option value="net" selected>На руки (Net)</option>
+                <option value="gross">По договору (Gross)</option>
+              </select>
+            </div>
+            <div class="row">
+              <label>Количество сотрудников, чел.</label>
+              <input type="number" data-field="staffCount" min="0" step="1" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Оклад 1 сотрудника (₽)</label>
+              <input type="number" data-field="staffSalary" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Бонус продавцов, % от выручки <span class="tip" data-tip="Переменная премия персонала от валовой выручки магазина">?</span></label>
+              <input type="number" data-field="staffBonusPct" min="0" max="50" step="0.5" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>Выплата сотрудникам на руки</span>
+              <strong id="pnlFotNet">0 ₽</strong>
+            </div>
+            <div class="row">
+              <label>НДФЛ, % <span class="tip" data-tip="Базовая ставка НДФЛ в РФ — 13%">?</span></label>
+              <input type="number" data-field="ndflPct" min="0" max="50" step="0.5" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>НДФЛ удержанный / начисленный</span>
+              <strong id="pnlNdflAmount">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Начисленный ФОТ (Gross)</span>
+              <strong id="pnlFotGross">0 ₽</strong>
+            </div>
+            <div class="row">
+              <label>Взносы СФР (ПФР, ФСС, ОМС), % <span class="tip" data-tip="В РФ: 30,2% (30% СФР + 0,2% травматизм) или 15,2% для МСП">?</span></label>
+              <input type="number" data-field="socialTaxPct" min="0" max="100" step="0.1" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>Страховые взносы (ПФР, ФСС, ОМС)</span>
+              <strong id="pnlSocialTax">0 ₽</strong>
+            </div>
+            <div class="row">
+              <label>Аренда помещения в мес. (₽)</label>
+              <input type="number" data-field="rentMonthly" min="0" step="5000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Логистика и доставка (₽)</label>
+              <input type="number" data-field="logisticsMonthly" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Эквайринг и банк, % от выручки</label>
+              <input type="number" data-field="acquiringPct" min="0" max="20" step="0.1" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>Банковские и эквайринг (₽)</span>
+              <strong id="pnlAcquiring">0 ₽</strong>
+            </div>
+            <div class="row">
+              <label>Прочие (уборка, канцтовары, связь) (₽)</label>
+              <input type="number" data-field="otherOpexMonthly" min="0" step="1000" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>ИТОГО OPEX (<span id="pnlOpexShare">0%</span> от выручки)</span>
+              <strong id="pnlOpexTotal">0 ₽</strong>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row highlight-green">
+              <span>Операционная прибыль / EBITDA</span>
+              <strong id="pnlEbitda">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Рентабельность по EBITDA (OPM)</span>
+              <strong id="pnlOpm">0,00 %</strong>
+            </div>
+            <div class="row">
+              <label>Срок амортизации CAPEX, мес.</label>
+              <input type="number" data-field="amortizationMonths" min="1" max="120" step="1" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>Амортизация в мес.</span>
+              <strong id="pnlAmortization">0 ₽</strong>
+            </div>
+            <div class="row">
+              <label>Ставка налога бизнеса, % <span class="tip" data-tip="УСН 6% с выручки, УСН 15% с прибыли или 25% налог на прибыль ОСНО">?</span></label>
+              <input type="number" data-field="businessTaxPct" min="0" max="100" step="0.5" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>Налоги бизнеса (<span id="pnlTaxBaseLabel">УСН 6%</span>)</span>
+              <strong id="pnlBusinessTax">0 ₽</strong>
+            </div>
+            <div class="row highlight-profit">
+              <span>ЧИСТАЯ ПРИБЫЛЬ / Net Profit</span>
+              <strong id="pnlNetProfit">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Чистая рентабельность (NPM)</span>
+              <strong id="pnlNpm">0,00 %</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Custom-режим: база налога (показывается только при выборе «Настраиваемый режим») -->
+        <section class="card hidden" id="customTaxBaseCard">
+          <h3 class="card-title">3a. Настраиваемый налоговый режим</h3>
+          <div class="form-rows">
+            <div class="row">
+              <label>База налога бизнеса <span class="tip" data-tip="От выручки (как УСН 6%) или от прибыли (как УСН 15% / ОСНО)">?</span></label>
+              <select data-field="customTaxBase">
+                <option value="revenue">От выручки (без НДС)</option>
+                <option value="profit" selected>От прибыли</option>
+              </select>
+            </div>
+            <div class="row calc-row">
+              <span>Текущая база налога</span>
+              <strong id="customTaxBaseLabel">От прибыли</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- КОЛОНКА 3 -->
+      <div class="grid-col">
+        <!-- Блок 4 -->
+        <section class="card">
+          <h3 class="card-title">4. Оптовый блок и Управляющий офис</h3>
+          <div class="form-rows">
+            <div class="row">
+              <label>Плановая оптовая выручка / мес. (₽)</label>
+              <input type="number" data-field="wholesaleRevenue" min="0" step="10000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Наценка опта к себестоимости, % <span class="tip" data-tip="Например: 25% к себестоимости. Если ниже 0% — опт убыточен">?</span></label>
+              <input type="number" data-field="wholesaleMarkupPct" min="-90" max="500" step="1" autocomplete="off" />
+            </div>
+            <div id="wholesaleWarning" class="alert-danger hidden" role="alert">
+              Внимание: оптовая наценка отрицательная — опт работает в убыток!
+            </div>
+            <div class="row calc-row">
+              <span>Себестоимость опта</span>
+              <strong id="outWholesaleCogs">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Чистая прибыль опта (после налогов)</span>
+              <strong id="outWholesaleNetProfit">0 ₽</strong>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row">
+              <label>Расходы управляющего офиса / мес. (₽) <span class="tip" data-tip="ФОТ офиса, склад, маркетинг сети, бухгалтерия">?</span></label>
+              <input type="number" data-field="officeExpenses" min="0" step="10000" autocomplete="off" />
+            </div>
+            <div class="row">
+              <label>Текущее / целевое кол-во магазинов</label>
+              <input type="number" data-field="targetStoresCount" min="1" max="500" step="1" autocomplete="off" />
+            </div>
+            <div class="row calc-row">
+              <span>Требуемая прибыль от розницы</span>
+              <strong id="outRequiredRetailProfit">0 ₽</strong>
+            </div>
+            <div class="row highlight-green">
+              <span>Магазинов для окупаемости офиса</span>
+              <strong id="outBreakevenStores">0 шт.</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Чистая прибыль всей сети / мес.</span>
+              <strong id="outTotalNetworkProfit">0 ₽</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- Блок 5 -->
+        <section class="card">
+          <h3 class="card-title">5. Эффективность, BEP и разгон (Ramp-up)</h3>
+          <div class="form-rows">
+            <div class="row calc-row">
+              <span>Точка безубыточности магазина (BEP) <span class="tip" data-tip="Минимальная месячная выручка с чеков для выхода в ноль">?</span></span>
+              <strong id="outBepRevenue">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Запас финансовой прочности</span>
+              <strong id="outSafetyMargin">0,0 %</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Выручка на 1 м² торговой площади</span>
+              <strong id="outRevPerSqm">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Чистая прибыль на 1 м² торг. площади</span>
+              <strong id="outProfitPerSqm">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Аренда на 1 м² общей площади</span>
+              <strong id="outRentPerSqm">0 ₽</strong>
+            </div>
+            <div class="row calc-row">
+              <span>Оборачиваемость товарного запаса</span>
+              <strong id="outStockTurnover">0,00 мес.</strong>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="row">
+              <label>Период разгона магазина, мес. <span class="tip" data-tip="Сколько месяцев магазин выходит на 100% плановой выручки">?</span></label>
+              <select data-field="rampUpMonths">
+                <option value="0">0 мес. (сразу 100% плана)</option>
+                <option value="2">2 мес. (60% → 85% → 100%)</option>
+                <option value="3" selected>3 мес. (50% → 75% → 90% → 100%)</option>
+                <option value="6">6 мес. (плавный рост 40%..95%)</option>
+              </select>
+            </div>
+            <div class="row calc-row">
+              <span>Окупаемость (без учета разгона)</span>
+              <strong id="outPaybackIdeal">0,0 мес.</strong>
+            </div>
+            <div class="row highlight-green">
+              <span>Реальная окупаемость (с разгоном)</span>
+              <strong id="outPaybackReal">0,0 мес.</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Нижний блок на всю ширину -->
+    <section class="card bottom-section">
+      <div class="bottom-tabs" role="tablist" aria-label="Дополнительные отчёты">
+        <button type="button" class="subtab-btn active" data-subtab="compare" role="tab" aria-selected="true">6. Сравнение сценариев: План А vs План Б</button>
+        <button type="button" class="subtab-btn" data-subtab="chart" role="tab" aria-selected="false">График окупаемости (24 месяца)</button>
+        <button type="button" class="subtab-btn" data-subtab="cashflow" role="tab" aria-selected="false">Таблица Cash Flow (12 месяцев)</button>
+      </div>
+
+      <!-- Подвкладка 1: Сравнение сценариев -->
+      <div id="subtab-compare" class="subtab-content active" role="tabpanel">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Показатель (1 магазин / сеть)</th>
+                <th>План А (Базовый)</th>
+                <th>План Б (Альтернативный)</th>
+                <th>Разница (Б − А)</th>
+              </tr>
+            </thead>
+            <tbody id="comparisonTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Подвкладка 2: Интерактивный график окупаемости -->
+      <div id="subtab-chart" class="subtab-content" role="tabpanel">
+        <div class="chart-header-bar">
+          <div class="chart-title-info">
+            <strong>Динамика накопленного денежного потока (Cumulative Cash Flow, 24 мес.)</strong>
+            <span>Пересечение линии нуля показывает точный месяц возврата стартовых инвестиций (CAPEX + ТЗ)</span>
+          </div>
+          <div class="chart-legend">
+            <span class="legend-item"><i class="line-sample line-a" aria-hidden="true"></i>План А: <strong id="chartPaybackA">—</strong></span>
+            <span class="legend-item"><i class="line-sample line-b" aria-hidden="true"></i>План Б: <strong id="chartPaybackB">—</strong></span>
+          </div>
+        </div>
+        <div class="svg-chart-wrap" id="paybackChartContainer"></div>
+      </div>
+
+      <!-- Подвкладка 3: Помесячный Cash Flow -->
+      <div id="subtab-cashflow" class="subtab-content" role="tabpanel">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Месяц</th>
+                <th>Загрузка</th>
+                <th>Выручка с чеков (₽)</th>
+                <th>НДС (₽)</th>
+                <th>Себестоимость (₽)</th>
+                <th>OPEX (₽)</th>
+                <th>Налог бизнеса (₽)</th>
+                <th>Денежный поток (CF)</th>
+                <th>Накопленный CF</th>
+              </tr>
+            </thead>
+            <tbody id="cashflowTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- SheetJS для экспорта в Excel (.xlsx) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
